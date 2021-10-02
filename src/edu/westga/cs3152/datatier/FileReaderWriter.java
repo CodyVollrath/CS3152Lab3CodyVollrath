@@ -8,8 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class FileReaderWriter {
-	private FileReaderWriter() {}
+/**
+ * Used for file IO
+ * @author Cody Vollrath
+ * @version Fall 2021
+ */
+public final class FileReaderWriter {
 	
 	/**
 	 * Writes a string to a file
@@ -22,8 +26,8 @@ public class FileReaderWriter {
 			byte[] strToBytes = summaryOutput.getBytes();
 			outputStream.write(strToBytes);
 			outputStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException ex) {
+			ex.printStackTrace();
 		}
 	}
 	
@@ -40,8 +44,8 @@ public class FileReaderWriter {
 				String line = scan.nextLine().trim();
 				fileData.add(line);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 		
 		return fileData;
