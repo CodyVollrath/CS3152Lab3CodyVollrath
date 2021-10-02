@@ -2,20 +2,20 @@ package edu.westga.cs3152.demo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-
-import org.mindrot.jbcrypt.BCrypt;
 
 import edu.westga.cs3152.datatier.FileReaderWriter;
 import edu.westga.cs3152.datatier.PasswordHashData;
 import edu.westga.cs3152.datatier.StarterPasswordGenerator;
 import edu.westga.cs3152.hashing.SimpleCrypt;
 
+/**
+ * Decrypts the passwords and puts them into a file
+ * @author Cody Vollrath
+ * @version Fall 2021
+ */
 public class DecryptThePasswords {
 	private final static String WORST_PASSWORDS_FILENAME = "500-worst-passwords.txt";
 	private final static String PASSWORD_DATA_FILENAME = "passwordData.csv";
-	private final static String PASSWORD_DATA_BCRYPT_FILENAME = "passwordDataBCrypt.csv";
 	private static ArrayList<String> hashedPasswords;
 	private static ArrayList<String> usernames;
 	
@@ -30,8 +30,10 @@ public class DecryptThePasswords {
 		System.out.println("Finished! Now Cracking starter passwords this may take time...");
 		summary += crackStarterPasswords();
 		System.out.print("Output: \n" + summary);
+		FileReaderWriter.writeOutputToFile(summary, "crackedPasswords.csv");
 	}
-		
+	
+	
 	private static String crackWorstPasswords() {
 		String summary = "";
 		PasswordHashData pwData = new PasswordHashData(PASSWORD_DATA_FILENAME);
@@ -179,7 +181,6 @@ public class DecryptThePasswords {
 	
 	private static String crackStarterPasswords() {
 		String summary = "";
-		PasswordHashData pwData = new PasswordHashData(PASSWORD_DATA_FILENAME);
 		SimpleCrypt crypt = new SimpleCrypt();
 		ArrayList<String> starterPasswords = StarterPasswordGenerator.getStarterPasswords();
 		int index = 0;

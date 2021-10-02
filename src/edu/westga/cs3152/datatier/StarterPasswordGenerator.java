@@ -9,6 +9,10 @@ public class StarterPasswordGenerator {
 	private final static int MAX_MIN_OUTCOMES = 10000;
 	private StarterPasswordGenerator() {}
 	
+	/**
+	 * Generates a list of starter passwords: {Aa0000, Aa0001, Aa0002, ... Zz9999}
+	 * @return a list of starter passwords from Aa0000 to Zz9999
+	 */
 	public static ArrayList<String> getStarterPasswords() {
 		ArrayList<String> generatedPasswords = new ArrayList<String>();
 		for (int upper = 0; upper < ALPHABET_LENGTH; upper++) {

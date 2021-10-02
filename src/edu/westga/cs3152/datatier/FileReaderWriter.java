@@ -11,6 +11,11 @@ import java.util.Scanner;
 public class FileReaderWriter {
 	private FileReaderWriter() {}
 	
+	/**
+	 * Writes a string to a file
+	 * @param summaryOutput the string to be written to the file
+	 * @param filename the name of the file that will get the string
+	 */
 	public static void writeOutputToFile(String summaryOutput, String filename) {
 		try {
 			FileOutputStream outputStream = new FileOutputStream(filename);
@@ -22,6 +27,11 @@ public class FileReaderWriter {
 		}
 	}
 	
+	/**
+	 * Gets data from a file with each line in the form of a list
+	 * @param filename the name of the file
+	 * @return a list of the lines in the file
+	 */
 	public static ArrayList<String> readOutputFromFile(String filename) {
 		ArrayList<String> fileData = new ArrayList<String>();
 		File file = new File(filename);
