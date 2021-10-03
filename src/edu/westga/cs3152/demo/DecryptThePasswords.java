@@ -1,7 +1,10 @@
 package edu.westga.cs3152.demo;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Map;
 
 import edu.westga.cs3152.datatier.FileReaderWriter;
 import edu.westga.cs3152.datatier.PasswordHashData;
@@ -14,11 +17,18 @@ import edu.westga.cs3152.hashing.SimpleCrypt;
  * @version Fall 2021
  */
 public class DecryptThePasswords {
-	private final static String WORST_PASSWORDS_FILENAME = "500-worst-passwords.txt";
-	private final static String PASSWORD_DATA_FILENAME = "passwordData.csv";
+	private static final String WORST_PASSWORDS_FILENAME = "500-worst-passwords.txt";
+	private static final String PASSWORD_DATA_FILENAME = "passwordData.csv";
+	private static final Map<String, String> LETTER_NUMBER_SUBS = Map.ofEntries(
+			new AbstractMap.SimpleEntry<String, String>("e", "3"),
+			new AbstractMap.SimpleEntry<String, String>("i", "1"),
+			new AbstractMap.SimpleEntry<String, String>("o", "0"),
+			new AbstractMap.SimpleEntry<String, String>("s", "5")
+			);
 	private static ArrayList<String> hashedPasswords;
 	private static ArrayList<String> usernames;
-	
+	private static LinkedHashSet<String> passwordPermutations = new LinkedHashSet<String>();
+
 	/**
 	 * Decrypts passwords
 	 * 
@@ -33,7 +43,6 @@ public class DecryptThePasswords {
 		FileReaderWriter.writeOutputToFile(summary, "crackedPasswords.csv");
 	}
 	
-	
 	private static String crackWorstPasswords() {
 		String summary = "";
 		PasswordHashData pwData = new PasswordHashData(PASSWORD_DATA_FILENAME);
@@ -45,129 +54,15 @@ public class DecryptThePasswords {
 		String[] usernamesArry = pwData.getUsernames();
 		usernames = new ArrayList<String>(usernamesArry.length);
 		usernames.addAll(Arrays.asList(usernamesArry));
+		for (String password : worstPasswords) {
+			checkLetterMutations(password, 0);
+		}
 		int index = 0;
 		for (String hash : hashArry) {
-			for (String password : worstPasswords) {
+			for (String password : passwordPermutations) {
 				if (crypt.checkPassword(password, hash)) {
 					String username = usernames.get(index);
 					summary += String.format("%s,%s\n", username, password);
-					hashedPasswords.remove(hash);
-					usernames.remove(username);
-					index--;
-					break;
-				}
-				//Check first: e
-				if (crypt.checkPassword(password.replaceFirst("[eE]", "3"), hash)) {
-					String username = usernames.get(index);
-					summary += String.format("%s,%s\n", username, password.replaceFirst("[eE]", "3"));
-					hashedPasswords.remove(hash);
-					usernames.remove(username);
-					index--;
-					break;
-				}
-				//Check Last: e
-				if (crypt.checkPassword(password.replaceAll("[eE]$", "3"), hash)) {
-					String username = usernames.get(index);
-					summary += String.format("%s,%s\n", username, password.replaceAll("[eE]$", "3"));
-					hashedPasswords.remove(hash);
-					usernames.remove(username);
-					index--;
-					break;
-				}
-				//Check all: e
-				if (crypt.checkPassword(password.replaceAll("[eE]", "3"), hash)) {
-					String username = usernames.get(index);
-					summary += String.format("%s,%s\n", username, password.replaceAll("[eE]", "3"));
-					hashedPasswords.remove(hash);
-					usernames.remove(username);
-					index--;
-					break;
-				}
-				//Check first: i
-				if (crypt.checkPassword(password.replaceFirst("[iI]", "1"), hash)) {
-					String username = usernames.get(index);
-					summary += String.format("%s,%s\n", username, password.replaceFirst("[iI]", "1"));
-					hashedPasswords.remove(hash);
-					usernames.remove(username);
-					index--;
-					break;
-				}
-				//Check last: i
-				if (crypt.checkPassword(password.replaceAll("[iI]$", "1"), hash)) {
-					String username = usernames.get(index);
-					summary += String.format("%s,%s\n", username, password.replaceAll("[iI]$", "1"));
-					hashedPasswords.remove(hash);
-					usernames.remove(username);
-					index--;
-					break;
-				}
-				//Check all: i
-				if (crypt.checkPassword(password.replaceAll("[iI]", "1"), hash)) {
-					String username = usernames.get(index);
-					summary += String.format("%s,%s\n", username, password.replaceAll("[iI]", "1"));
-					hashedPasswords.remove(hash);
-					usernames.remove(username);
-					index--;
-					break;
-				}
-				//Check first: o
-				if (crypt.checkPassword(password.replaceFirst("[oO]", "0"), hash)) {
-					String username = usernames.get(index);
-					summary += String.format("%s,%s\n", username, password.replaceFirst("[oO]", "0"));
-					hashedPasswords.remove(hash);
-					usernames.remove(username);
-					index--;
-					break;
-				}
-				//Check last: o
-				if (crypt.checkPassword(password.replaceAll("[oO]$", "0"), hash)) {
-					String username = usernames.get(index);
-					summary += String.format("%s,%s\n", username, password.replaceAll("[oO]$", "0"));
-					hashedPasswords.remove(hash);
-					usernames.remove(username);
-					index--;
-					break;
-				}
-				//Check All: o
-				if (crypt.checkPassword(password.replaceAll("[oO]", "0"), hash)) {
-					String username = usernames.get(index);
-					summary += String.format("%s,%s\n", username, password.replaceAll("[oO]", "0"));
-					hashedPasswords.remove(hash);
-					usernames.remove(username);
-					index--;
-					break;
-				}
-				//Check first: s
-				if (crypt.checkPassword(password.replaceFirst("[sS]", "5"), hash)) {
-					String username = usernames.get(index);
-					summary += String.format("%s,%s\n", username, password.replaceFirst("[sS]", "5"));
-					hashedPasswords.remove(hash);
-					usernames.remove(username);
-					index--;
-					break;
-				}
-				//Check last: s
-				if (crypt.checkPassword(password.replaceAll("[sS]$", "5"), hash)) {
-					String username = usernames.get(index);
-					summary += String.format("%s,%s\n", username, password.replaceAll("[sS]$", "5"));
-					hashedPasswords.remove(hash);
-					usernames.remove(username);
-					index--;
-					break;
-				}
-				//Check All: s
-				if (crypt.checkPassword(password.replaceAll("[sS]", "5"), hash)) {
-					String username = usernames.get(index);
-					summary += String.format("%s,%s\n", username, password.replaceAll("[sS]", "5"));
-					hashedPasswords.remove(hash);
-					usernames.remove(username);
-					index--;
-					break;
-				}
-				//Check All: e, i, o, s
-				if (crypt.checkPassword(password.replaceAll("[sS]", "5").replaceAll("[eE]", "3").replaceAll("[oO]", "0").replaceAll("[iI]", "1"), hash)) {
-					String username = usernames.get(index);
-					summary += String.format("%s,%s\n", username, password.replaceAll("[sS]", "5").replaceAll("[eE]", "3").replaceAll("[oO]", "0").replaceAll("[iI]", "1"));
 					hashedPasswords.remove(hash);
 					usernames.remove(username);
 					index--;
@@ -195,5 +90,20 @@ public class DecryptThePasswords {
 			index++;
 		}
 		return summary;
+	}
+	
+	private static void checkLetterMutations(String password, int currIndex) {
+		passwordPermutations.add(password);
+		StringBuffer currentPasswordMutation = new StringBuffer(password);
+		for (int index = currIndex; index < password.length(); index++) {
+			char currentChar = password.charAt(index);
+			if (LETTER_NUMBER_SUBS.containsKey(String.valueOf(currentChar))) {
+				char replacementChar = LETTER_NUMBER_SUBS.get(String.valueOf(currentChar)).charAt(0);
+				checkLetterMutations(currentPasswordMutation.toString(), currIndex + 1);
+				currentPasswordMutation.setCharAt(index, replacementChar);
+				checkLetterMutations(currentPasswordMutation.toString(), currIndex + 1);
+				passwordPermutations.add(currentPasswordMutation.toString());
+			}
+		}
 	}
 }
